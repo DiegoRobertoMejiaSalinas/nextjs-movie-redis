@@ -44,7 +44,7 @@ export interface ReleaseYear {
 }
 
 export interface TitleType {
-  text: Text;
+  text: string;
   id: string;
   isSeries: boolean;
   isEpisode: boolean;
