@@ -1,5 +1,5 @@
 import { MoviesList, NavbarComponent } from "@/components";
-import { Result } from "@/interfaces/MoviesResponse.interface";
+import { IMoviesResponse, Result } from "@/interfaces/MoviesResponse.interface";
 import { getMovies } from "@/lib/getMovies";
 import { useState } from "react";
 
@@ -28,12 +28,10 @@ export default function Home({ results }: Props) {
       delete tempFilters["text"];
     }
 
-    const newMovies = await getMovies({
-      ...tempFilters,
-      page: filters.page + 1,
-    });
+    const queryParams = new URLSearchParams({ ...(tempFilters as any) });
 
-    console.log(newMovies);
+    const response = await fetch(`/api/movies?${queryParams}`);
+    const newMovies: IMoviesResponse = await response.json();
 
     setMovies((originalMovies) => [...originalMovies, ...newMovies.results]);
 
