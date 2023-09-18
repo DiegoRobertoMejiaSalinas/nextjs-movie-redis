@@ -37,6 +37,7 @@ export const MoviesList = ({ results, loadMore }: Props) => {
           loadMore={loadMore}
           hasMore={true || false}
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+          initialLoad={false}
           loader={
             <div className="loader w-full" key={0}>
               <Loader />
