@@ -3,8 +3,8 @@ import { IMoviesResponse } from "@/interfaces/MoviesResponse.interface";
 
 interface QueryProps {
   page: number;
-  year: number;
-  title: string;
+  year?: number;
+  title?: string;
 }
 
 const getApiUrlCall = ({ page, year, title }: QueryProps) => {
@@ -19,12 +19,14 @@ const getApiUrlCall = ({ page, year, title }: QueryProps) => {
   return `${API_URL}/titles?${query}`;
 };
 export const getMovies = async (query: QueryProps) => {
+  console.time()
   const response = await fetch(getApiUrlCall(query), {
     headers: {
       "X-RapidAPI-Key": RAPID_API_KEY!,
       "X-RapidAPI-Host": RAPID_API_HOST!,
     },
   });
+  console.timeEnd()
 
   const data: IMoviesResponse = await response.json();
 
