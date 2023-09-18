@@ -1,0 +1,18 @@
+/* HTML: <div class="loader"></div> */
+.loader {
+  margin-top: 2rem;
+  width: 90px;
+  height: 12px;
+  --c: #ffffff 50%, #ffffff00 0;
+  background: linear-gradient(90deg, var(--c)) 0 0,
+    linear-gradient(-90deg, var(--c)) 0 0;
+  background-size: 20px 100%;
+  background-repeat: repeat-x;
+  animation: l10 1s infinite linear;
+  /* margin: 0 auto; */
+}
+@keyframes l10 {
+  100% {
+    background-position: -20px 0, 20px 0;
+  }
+}
