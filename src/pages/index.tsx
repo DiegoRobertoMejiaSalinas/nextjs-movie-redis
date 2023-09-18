@@ -1,4 +1,6 @@
 import { SearchIcon } from "@/components";
+import { Result } from "@/interfaces/MoviesResponse.interface";
+import { getMovies } from "@/lib/getMovies";
 import {
   Navbar,
   NavbarBrand,
@@ -11,11 +13,97 @@ import {
   CardHeader,
   CardBody,
   CardFooter,
-  Image,
 } from "@nextui-org/react";
+import { InferGetStaticPropsType } from "next";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
-export default function Home() {
+interface Props {
+  results: Result[];
+}
+
+const IMAGE_UNAVAILABLE =
+  "https://eagle-sensors.com/wp-content/uploads/unavailable-image.jpg";
+
+const CardMovieItem = ({ movieItem }: { movieItem: Result }) => {
+  const aspectRatio = movieItem?.primaryImage
+    ? movieItem?.primaryImage?.width! / movieItem?.primaryImage?.height!
+    : 1;
+
+  return (
+    <Card className="pt-2" key={movieItem.id}>
+      <CardHeader className="pb-0 pt-2 px-4 flex-col items-start mb-5">
+        <small className="text-default-500">
+          {movieItem?.releaseYear?.year}
+        </small>
+        <h4 className="font-bold text-large">{movieItem?.titleText?.text}</h4>
+      </CardHeader>
+      <CardBody
+        className="overflow-visible px-2 mx-auto pt-4 pb-0"
+        style={{
+          width: "100%",
+          aspectRatio,
+        }}
+      >
+        <Image
+          alt={movieItem?.titleText?.text}
+          className="object-cover h-auto max-w-full rounded-lg"
+          src={movieItem?.primaryImage?.url || IMAGE_UNAVAILABLE}
+          fill
+        />
+      </CardBody>
+    </Card>
+  );
+};
+
+const MasonryMovies = ({ results }: Props) => {
+  if (!results?.length) return <></>;
+
+  const firstGrid = [];
+  const secondGrid = [];
+  const thirdGrid = [];
+  const fourthGrid = [];
+
+  for (let i = 0; i <= results.length - 1; i++) {
+    if (i % 4 == 0) {
+      firstGrid.push(results[i]);
+    } else if (i % 4 == 1) {
+      secondGrid.push(results[i]);
+    } else if (i % 4 == 2) {
+      thirdGrid.push(results[i]);
+    } else if (i % 4 == 3) {
+      fourthGrid.push(results[i]);
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="flex flex-col gap-8">
+        {firstGrid.map((movieItem) => (
+          <CardMovieItem movieItem={movieItem} key={movieItem.id} />
+        ))}
+      </div>
+      <div className="flex flex-col gap-8">
+        {secondGrid.map((movieItem) => (
+          <CardMovieItem movieItem={movieItem} key={movieItem.id} />
+        ))}
+      </div>
+      <div className="flex flex-col gap-8">
+        {thirdGrid.map((movieItem) => (
+          <CardMovieItem movieItem={movieItem} key={movieItem.id} />
+        ))}
+      </div>
+      <div className="flex flex-col gap-8">
+        {fourthGrid.map((movieItem) => (
+          <CardMovieItem movieItem={movieItem} key={movieItem.id} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default function Home({ results }: Props) {
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -78,112 +166,32 @@ export default function Home() {
       </Navbar>
 
       {/* Movie List */}
-      <div className="list_movies grid gap-4 grid-cols-6 px-20 py-10">
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <small className="text-default-500">2023</small>
-            <h4 className="font-bold text-large">The Flash</h4>
-          </CardHeader>
-          <CardBody className="overflow-visible py-2">
-            <Image
-              alt="Card background"
-              className="object-cover rounded-xl"
-              src="https://m.media-amazon.com/images/M/MV5BODBiZWIzZjUtMDFkMC00NWVhLWE5ZTktOWZjY2M1Zjc1NzY2XkEyXkFqcGdeQXVyNjE2MDMxNTg@._V1_.jpg"
-              width={270}
-            />
-          </CardBody>
-        </Card>
 
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <small className="text-default-500">2023</small>
-            <h4 className="font-bold text-large">The Flash</h4>
-          </CardHeader>
-          <CardBody className="overflow-visible py-2">
-            <Image
-              alt="Card background"
-              className="object-cover rounded-xl"
-              src="https://m.media-amazon.com/images/M/MV5BODBiZWIzZjUtMDFkMC00NWVhLWE5ZTktOWZjY2M1Zjc1NzY2XkEyXkFqcGdeQXVyNjE2MDMxNTg@._V1_.jpg"
-              width={270}
-            />
-          </CardBody>
-        </Card>
-
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <small className="text-default-500">2023</small>
-            <h4 className="font-bold text-large">The Flash</h4>
-          </CardHeader>
-          <CardBody className="overflow-visible py-2">
-            <Image
-              alt="Card background"
-              className="object-cover rounded-xl"
-              src="https://m.media-amazon.com/images/M/MV5BODBiZWIzZjUtMDFkMC00NWVhLWE5ZTktOWZjY2M1Zjc1NzY2XkEyXkFqcGdeQXVyNjE2MDMxNTg@._V1_.jpg"
-              width={270}
-            />
-          </CardBody>
-        </Card>
-
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <small className="text-default-500">2023</small>
-            <h4 className="font-bold text-large">The Flash</h4>
-          </CardHeader>
-          <CardBody className="overflow-visible py-2">
-            <Image
-              alt="Card background"
-              className="object-cover rounded-xl"
-              src="https://m.media-amazon.com/images/M/MV5BODBiZWIzZjUtMDFkMC00NWVhLWE5ZTktOWZjY2M1Zjc1NzY2XkEyXkFqcGdeQXVyNjE2MDMxNTg@._V1_.jpg"
-              width={270}
-            />
-          </CardBody>
-        </Card>
-
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <small className="text-default-500">2023</small>
-            <h4 className="font-bold text-large">The Flash</h4>
-          </CardHeader>
-          <CardBody className="overflow-visible py-2">
-            <Image
-              alt="Card background"
-              className="object-cover rounded-xl"
-              src="https://m.media-amazon.com/images/M/MV5BODBiZWIzZjUtMDFkMC00NWVhLWE5ZTktOWZjY2M1Zjc1NzY2XkEyXkFqcGdeQXVyNjE2MDMxNTg@._V1_.jpg"
-              width={270}
-            />
-          </CardBody>
-        </Card>
-
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <small className="text-default-500">2023</small>
-            <h4 className="font-bold text-large">The Flash</h4>
-          </CardHeader>
-          <CardBody className="overflow-visible py-2">
-            <Image
-              alt="Card background"
-              className="object-cover rounded-xl"
-              src="https://m.media-amazon.com/images/M/MV5BODBiZWIzZjUtMDFkMC00NWVhLWE5ZTktOWZjY2M1Zjc1NzY2XkEyXkFqcGdeQXVyNjE2MDMxNTg@._V1_.jpg"
-              width={270}
-            />
-          </CardBody>
-        </Card>
-
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <small className="text-default-500">2023</small>
-            <h4 className="font-bold text-large">The Flash</h4>
-          </CardHeader>
-          <CardBody className="overflow-visible py-2">
-            <Image
-              alt="Card background"
-              className="object-cover rounded-xl"
-              src="https://m.media-amazon.com/images/M/MV5BODBiZWIzZjUtMDFkMC00NWVhLWE5ZTktOWZjY2M1Zjc1NzY2XkEyXkFqcGdeQXVyNjE2MDMxNTg@._V1_.jpg"
-              width={270}
-            />
-          </CardBody>
-        </Card>
+      <div className="list_movies px-20 py-10">
+        <MasonryMovies results={results} />
       </div>
     </>
   );
 }
+
+export const getServerSideProps = async (ctx: any) => {
+  const yearValue = () => {
+    if (!ctx.query?.title) return 2023;
+
+    return ctx.query.year;
+  };
+
+  const query: any = {
+    page: ctx.query?.page || 1,
+    year: yearValue(),
+    title: ctx.query?.title || null,
+  };
+
+  const response = await getMovies(query);
+
+  return {
+    props: {
+      results: response.results,
+    },
+  };
+};
