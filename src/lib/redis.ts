@@ -13,7 +13,7 @@ interface SaveProp {
 const redis = new Redis(String(process.env.REDIS_URI));
 
 export const saveCacheSingleMovie = async (id: string, result: SaveProp) => {
-  redis.setex(`movie:${id}`, 60 * 60 * 24 * 30, JSON.stringify(result));
+  redis.setex(`movie:${id}`, 60 * 60 * 24, JSON.stringify(result));
 };
 
 export const getCacheSingleMovie = async (id: string) => {
@@ -36,7 +36,7 @@ export const saveCacheMovies = async (query: any, results: IMoviesResponse) => {
 
   redis.setex(
     `movies:${purgedFilters}`,
-    60 * 10,
+    60 * 60 * 3,
     JSON.stringify({ ...results })
   );
 };
