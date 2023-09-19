@@ -56,6 +56,7 @@ export default function SearchPage({
     const newMovies: IMoviesResponse = await response.json();
 
     setMovies((originalMovies) => [...originalMovies, ...newMovies.results]);
+    setHasNextPage(!!newMovies.next);
 
     setFilters((oldFilters) => ({
       ...oldFilters,
