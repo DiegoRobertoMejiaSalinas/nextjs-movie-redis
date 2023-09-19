@@ -1,13 +1,26 @@
 import { IMoviesResponse } from "@/interfaces/MoviesResponse.interface";
+import { ISingleMovieCastResponse } from "@/interfaces/SingleMovieCastResponse.interface";
+import { ISingleMovieResponse } from "@/interfaces/SingleMovieResponse.interface";
+import { ISingleMovieRevenueBudgetResponse } from "@/interfaces/SingleMovieRevenueBudget.interface";
 import { Redis } from "ioredis";
 
-interface QueryProps {
-  page: number;
-  year?: number;
-  title?: string;
+interface SaveProp {
+  data: ISingleMovieResponse;
+  revenueData: ISingleMovieRevenueBudgetResponse;
+  castData: ISingleMovieCastResponse;
 }
 
 const redis = new Redis(String(process.env.REDIS_URI));
+
+export const saveCacheSingleMovie = async (id: string, result: SaveProp) => {
+  redis.setex(`movie:${id}`, 60 * 60 * 24 * 30, JSON.stringify(result));
+};
+
+export const getCacheSingleMovie = async (id: string) => {
+  const foundResult = await redis.get(`movie:${id}`);
+  const parsedResult: SaveProp = foundResult ? JSON.parse(foundResult) : null;
+  return parsedResult;
+};
 
 export const saveCacheMovies = async (query: any, results: IMoviesResponse) => {
   let purgedFilters: string = "";
@@ -42,7 +55,9 @@ export const getCacheMovies = async (query: any) => {
 
   const foundResult = await redis.get(`movies:${purgedFilters}`);
 
-  const parsedResult = foundResult ? JSON.parse(foundResult) : null;
+  const parsedResult: IMoviesResponse = foundResult
+    ? JSON.parse(foundResult)
+    : null;
 
   return parsedResult;
 };
