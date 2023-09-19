@@ -9,6 +9,7 @@ const getApiUrlCall = ({ page }: IFilterMovie) => {
     limit: "20",
     titleType: "movie",
     page: page ? String(page) : "1",
+    info: "mini_info",
   });
 
   return `${API_URL}/titles?${urlQueryParams}`;

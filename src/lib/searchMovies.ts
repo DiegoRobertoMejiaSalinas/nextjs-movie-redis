@@ -13,6 +13,7 @@ const getApiUrlCall = (query: QueryProps) => {
     titleType: "movie",
     limit: "20",
     exact: "false",
+    info: "mini_info",
   });
 
   for (let [key, value] of Object.entries(query)) {
