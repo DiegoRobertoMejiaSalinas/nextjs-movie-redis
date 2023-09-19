@@ -71,7 +71,7 @@ export default function Home({
 }
 
 export const getServerSideProps = async (ctx: any) => {
-  const response = await getMovies({});
+  const response = await getMovies({ page: 1 });
 
   return {
     props: {
