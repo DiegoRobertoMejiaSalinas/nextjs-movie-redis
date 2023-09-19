@@ -1,0 +1,21 @@
+.revenue_item_title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.not_released {
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.revenue_item_value {
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+@media screen and (min-width: 900px) and (orientation: landscape) {
+}

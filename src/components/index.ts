@@ -4,3 +4,6 @@ export * from "./Navbar/Navbar";
 export * from "./MovieList/MovieList";
 export * from "./Loader/Loader";
 export * from "./SearchEngineHead";
+export * from "./MovieInfo/MovieInfo";
+export * from "./ActorItem/ActorItem";
+export * from "./RevenueList/RevenueList";
