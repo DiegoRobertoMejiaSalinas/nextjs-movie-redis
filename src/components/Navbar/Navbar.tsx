@@ -1,6 +1,7 @@
 import { Navbar, NavbarBrand, NavbarContent, Input } from "@nextui-org/react";
 import { SearchIcon } from "..";
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 
 interface Props {
   onHandleSearch: (value: string) => void;
@@ -26,7 +27,9 @@ export const NavbarComponent = ({ onHandleSearch }: Props) => {
   return (
     <Navbar shouldHideOnScroll isBordered>
       <NavbarBrand>
-        <p className="font-bold text-inherit">Movie Search</p>
+        <Link href={"/"}>
+          <p className="font-bold text-inherit">Movie Search</p>
+        </Link>
       </NavbarBrand>
       {/* <NavbarContent className="hidden sm:flex gap-4" justify="center">
           <NavbarItem>
