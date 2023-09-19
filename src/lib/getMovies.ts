@@ -18,7 +18,7 @@ export const getMovies = async (query: IFilterMovie) => {
   console.time();
   console.log(getApiUrlCall(query));
 
-  const foundResult = await getCacheMovies(query);
+  const foundResult: IMoviesResponse = await getCacheMovies(query);
   if (foundResult) {
     console.timeEnd();
 
