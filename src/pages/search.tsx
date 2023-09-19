@@ -1,6 +1,7 @@
-import { MoviesList, NavbarComponent } from "@/components";
+import { MoviesList, NavbarComponent, SearchEngineHead } from "@/components";
 import { IFilterMovie } from "@/interfaces/FilterMovies.interface";
 import { IMoviesResponse, Result } from "@/interfaces/MoviesResponse.interface";
+import { ISeoProps } from "@/interfaces/seoProps";
 import { getSearchMovies } from "@/lib/searchMovies";
 import { InferGetServerSidePropsType, NextPageContext } from "next";
 import { useRouter } from "next/router";
@@ -16,6 +17,24 @@ export default function SearchPage({
     page: 1,
   });
   const [hasNextPage, setHasNextPage] = useState(!!nextPage);
+
+  const seo: ISeoProps = {
+    canonicalUrl: `https://next-movies-searcher.hedgehog-testing.xyz/search?title=${encodeURIComponent(
+      String(router.query?.title)
+    )}`,
+    description: `Now searching: ${String(
+      router.query?.title
+    ).toUpperCase()}. A testing movie searcher and catalogue made by Diego with NextJs, Redis and MoviesDatabase`,
+    ogImgUrl:
+      "https://res.cloudinary.com/purplesoda/image/upload/v1695146735/Test%20Images/denise-jans-Lq6rcifGjOU-unsplash_svtciv.webp",
+    ogTitle: `Movie Searcher by Diego - ${String(
+      router.query?.title
+    ).toUpperCase()}`,
+    ogType: "website",
+    title: `Movie Searcher by Diego - ${String(
+      router.query?.title
+    ).toUpperCase()}`,
+  };
 
   useEffect(() => {
     for (let [key, value] of Object.entries(router.query)) {
@@ -66,6 +85,8 @@ export default function SearchPage({
 
   return (
     <>
+      <SearchEngineHead {...seo} />
+
       <NavbarComponent onHandleSearch={handleNewSearch} />
       <MoviesList
         hasNext={hasNextPage}

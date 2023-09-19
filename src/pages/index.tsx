@@ -1,10 +1,22 @@
-import { MoviesList, NavbarComponent } from "@/components";
+import { MoviesList, NavbarComponent, SearchEngineHead } from "@/components";
 import { IFilterMovie } from "@/interfaces/FilterMovies.interface";
 import { IMoviesResponse, Result } from "@/interfaces/MoviesResponse.interface";
+import { ISeoProps } from "@/interfaces/seoProps";
 import { getMovies } from "@/lib/getMovies";
 import { InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
+
+const seo: ISeoProps = {
+  canonicalUrl: "https://next-movies-searcher.hedgehog-testing.xyz/",
+  description:
+    "A testing movie searcher and catalogue made by Diego with NextJs, Redis and MoviesDatabase",
+  ogImgUrl:
+    "https://res.cloudinary.com/purplesoda/image/upload/v1695146357/Test%20Images/samuel-regan-asante-wMkaMXTJjlQ-unsplash_1_uglivj.webp",
+  ogTitle: "Movie Searcher by Diego",
+  ogType: "website",
+  title: "Movie Searcher by Diego",
+};
 
 export default function Home({
   results,
@@ -43,6 +55,8 @@ export default function Home({
 
   return (
     <>
+      <SearchEngineHead {...seo} />
+
       {/* Navbar */}
       <NavbarComponent onHandleSearch={handleSearch} />
 
