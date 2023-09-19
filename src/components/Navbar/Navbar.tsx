@@ -2,7 +2,11 @@ import { Navbar, NavbarBrand, NavbarContent, Input } from "@nextui-org/react";
 import { SearchIcon } from "..";
 import { useState, useRef, useEffect } from "react";
 
-export const NavbarComponent = () => {
+interface Props {
+  onHandleSearch: (value: string) => void;
+}
+
+export const NavbarComponent = ({ onHandleSearch }: Props) => {
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -16,6 +20,7 @@ export const NavbarComponent = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    onHandleSearch(inputValue);
   };
 
   return (
@@ -47,7 +52,7 @@ export const NavbarComponent = () => {
             onChange={onInputHandle}
             value={inputValue}
             classNames={{
-              base: "max-w-full sm:max-w-[10rem] h-10",
+              base: "max-w-full sm:max-w-[10rem] lg:max-w-[20rem] h-10",
               mainWrapper: "h-full",
               input: "text-small",
               inputWrapper:
