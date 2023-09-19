@@ -1,5 +1,5 @@
 import { IMoviesResponse } from "@/interfaces/MoviesResponse.interface";
-import { createClient } from "redis";
+import { Redis } from "ioredis";
 
 interface QueryProps {
   page: number;
@@ -7,22 +7,9 @@ interface QueryProps {
   title?: string;
 }
 
-const redis = createClient({
-  url: process.env.REDIS_URL,
-});
-
-redis.on("error", (err) => console.log("Redis Client Error", err));
-
-const getRedisConnectionInstance = async () => {
-  if (!redis.isOpen) {
-    await redis.connect();
-  }
-  return redis;
-};
+const redis = new Redis(String(process.env.REDIS_URI));
 
 export const saveCacheMovies = async (query: any, results: IMoviesResponse) => {
-  const redisInstance = await getRedisConnectionInstance();
-
   let purgedFilters: string = "";
   let arrayPurgedFilters: string[] = [];
   for (const key in query) {
@@ -34,22 +21,14 @@ export const saveCacheMovies = async (query: any, results: IMoviesResponse) => {
 
   purgedFilters = arrayPurgedFilters.join("&");
 
-  //   redisInstance.json.set(`movies?${purgedFilters}`, "$", {
-  //     ...(results as any),
-  //   },);
-
-  redisInstance.setEx(
+  redis.setex(
     `movies:${purgedFilters}`,
     60 * 10,
     JSON.stringify({ ...results })
   );
-
-  //   redisInstance.disconnect();
 };
 
 export const getCacheMovies = async (query: any) => {
-  const redisInstance = await getRedisConnectionInstance();
-
   let purgedFilters: string = "";
   let arrayPurgedFilters: string[] = [];
   for (const key in query) {
@@ -61,9 +40,9 @@ export const getCacheMovies = async (query: any) => {
 
   purgedFilters = arrayPurgedFilters.join("&");
 
-  const foundResult = await redisInstance.get(`movies:${purgedFilters}`);
+  const foundResult = await redis.get(`movies:${purgedFilters}`);
 
-  //   redisInstance.disconnect();
+  const parsedResult = foundResult ? JSON.parse(foundResult) : null;
 
-  return foundResult ? JSON.parse(foundResult) : null;
+  return parsedResult;
 };
