@@ -4,10 +4,19 @@ import InfiniteScroll from "react-infinite-scroller";
 
 interface Props {
   results: Result[];
+  hasNext: boolean;
   loadMore: () => void;
 }
 
-export const MoviesList = ({ results, loadMore }: Props) => {
+const NoMoreResults = () => {
+  return (
+    <div className="bg-dark-100 mt-[4rem] border border-gray-500 text-center text-gray-100 px-4 py-6 rounded relative">
+      <strong>It seems there&apos; no more movies! 😭😭😭</strong>
+    </div>
+  );
+};
+
+export const MoviesList = ({ results, loadMore, hasNext }: Props) => {
   if (!results?.length) return <></>;
 
   const firstGrid = [];
@@ -35,7 +44,7 @@ export const MoviesList = ({ results, loadMore }: Props) => {
         <InfiniteScroll
           pageStart={0}
           loadMore={loadMore}
-          hasMore={true || false}
+          hasMore={hasNext}
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
           initialLoad={false}
           loader={
@@ -67,6 +76,8 @@ export const MoviesList = ({ results, loadMore }: Props) => {
             ))}
           </div>
         </InfiniteScroll>
+
+        {!hasNext && <NoMoreResults />}
       </div>
     </div>
   );

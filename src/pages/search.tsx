@@ -8,12 +8,14 @@ import { useEffect, useState } from "react";
 
 export default function SearchPage({
   results,
+  nextPage,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [movies, setMovies] = useState<Result[]>([...results]);
   const router = useRouter();
   const [filters, setFilters] = useState<IFilterMovie>({
     page: 1,
   });
+  const [hasNextPage, setHasNextPage] = useState(!!nextPage);
 
   useEffect(() => {
     for (let [key, value] of Object.entries(router.query)) {
@@ -35,6 +37,7 @@ export default function SearchPage({
     const newMovies: IMoviesResponse = await response.json();
 
     setMovies([...newMovies.results]);
+    setHasNextPage(!!newMovies.next);
 
     setFilters({
       ...tempFilters,
@@ -63,7 +66,11 @@ export default function SearchPage({
   return (
     <>
       <NavbarComponent onHandleSearch={handleNewSearch} />
-      <MoviesList results={movies} loadMore={handleLoadOneMorePage} />
+      <MoviesList
+        hasNext={hasNextPage}
+        results={movies}
+        loadMore={handleLoadOneMorePage}
+      />
     </>
   );
 }
@@ -82,6 +89,7 @@ export const getServerSideProps = async (ctx: NextPageContext) => {
   return {
     props: {
       results: response.results,
+      nextPage: response.next,
     },
   };
 };

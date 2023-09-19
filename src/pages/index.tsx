@@ -2,20 +2,20 @@ import { MoviesList, NavbarComponent } from "@/components";
 import { IFilterMovie } from "@/interfaces/FilterMovies.interface";
 import { IMoviesResponse, Result } from "@/interfaces/MoviesResponse.interface";
 import { getMovies } from "@/lib/getMovies";
+import { InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-interface Props {
-  results: Result[];
-}
-
-export default function Home({ results }: Props) {
+export default function Home({
+  results,
+  nextPage,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const [movies, setMovies] = useState<Result[]>([...results]);
   const [filters, setFilters] = useState<IFilterMovie>({
     page: 1,
   });
-  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasNextPage, setHasNextPage] = useState(!!nextPage);
 
   const handleSearch = (value: string) => {
     router.push(`/search?title=${value}`, undefined, {
@@ -33,6 +33,7 @@ export default function Home({ results }: Props) {
     const newMovies: IMoviesResponse = await response.json();
 
     setMovies((originalMovies) => [...originalMovies, ...newMovies.results]);
+    setHasNextPage(!!newMovies.next);
 
     setFilters((oldFilters) => ({
       ...oldFilters,
@@ -46,7 +47,11 @@ export default function Home({ results }: Props) {
       <NavbarComponent onHandleSearch={handleSearch} />
 
       {/* Movie List */}
-      <MoviesList results={movies} loadMore={handleLoadOneMorePage} />
+      <MoviesList
+        hasNext={hasNextPage}
+        results={movies}
+        loadMore={handleLoadOneMorePage}
+      />
     </>
   );
 }
@@ -57,6 +62,7 @@ export const getServerSideProps = async (ctx: any) => {
   return {
     props: {
       results: response.results,
+      nextPage: response.next,
     },
   };
 };
