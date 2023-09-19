@@ -10,7 +10,6 @@ export default async function handler(
 
     const newMovies = await getMovies({
       ...query,
-      page: Number(query?.page!) + 1,
     });
 
     return res.status(200).json(newMovies);

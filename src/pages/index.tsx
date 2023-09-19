@@ -1,32 +1,31 @@
 import { MoviesList, NavbarComponent } from "@/components";
+import { IFilterMovie } from "@/interfaces/FilterMovies.interface";
 import { IMoviesResponse, Result } from "@/interfaces/MoviesResponse.interface";
 import { getMovies } from "@/lib/getMovies";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 interface Props {
   results: Result[];
 }
 
-interface IFilters {
-  page: number;
-  text?: string;
-  year?: number;
-}
-
 export default function Home({ results }: Props) {
+  const router = useRouter();
   const [movies, setMovies] = useState<Result[]>([...results]);
-  const [filters, setFilters] = useState<IFilters>({
+  const [filters, setFilters] = useState<IFilterMovie>({
     page: 1,
-    text: "",
-    year: 2023,
   });
   const [hasNextPage, setHasNextPage] = useState(false);
 
+  const handleSearch = (value: string) => {
+    router.push(`/search?title=${value}`, undefined, {
+      shallow: true,
+    });
+  };
+
   const handleLoadOneMorePage = async () => {
     const tempFilters = { ...filters };
-    if (!tempFilters.text?.trim().length) {
-      delete tempFilters["text"];
-    }
+    tempFilters.page = Number(tempFilters.page) + 1;
 
     const queryParams = new URLSearchParams({ ...(tempFilters as any) });
 
@@ -35,38 +34,25 @@ export default function Home({ results }: Props) {
 
     setMovies((originalMovies) => [...originalMovies, ...newMovies.results]);
 
-    setFilters((oldFilters) => ({ ...oldFilters, page: oldFilters.page + 1 }));
+    setFilters((oldFilters) => ({
+      ...oldFilters,
+      page: Number(oldFilters.page) + 1,
+    }));
   };
 
   return (
     <>
       {/* Navbar */}
-      <NavbarComponent />
+      <NavbarComponent onHandleSearch={handleSearch} />
 
       {/* Movie List */}
       <MoviesList results={movies} loadMore={handleLoadOneMorePage} />
-
-      {/* <div className="list_movies px-20 py-10">
-        <MasonryMovies results={results} />
-      </div> */}
     </>
   );
 }
 
 export const getServerSideProps = async (ctx: any) => {
-  const yearValue = () => {
-    if (!ctx.query?.title) return 2023;
-
-    return ctx.query.year;
-  };
-
-  const query: any = {
-    page: ctx.query?.page || 1,
-    year: yearValue(),
-    title: ctx.query?.title || null,
-  };
-
-  const response = await getMovies(query);
+  const response = await getMovies({});
 
   return {
     props: {
