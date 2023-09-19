@@ -1,6 +1,7 @@
 import { Result } from "@/interfaces/MoviesResponse.interface";
 import { Loader, MovieCard } from "..";
 import InfiniteScroll from "react-infinite-scroller";
+import styles from "./MovieList.module.css";
 
 interface Props {
   results: Result[];
@@ -37,7 +38,9 @@ export const MoviesList = ({ results, loadMore, hasNext }: Props) => {
   }
 
   return (
-    <div className="list_movies px-8 sm:px-10 md:px-12 lg:px-16 xl:px-20 py-10">
+    <div
+      className={`${styles.list_movies} px-8 sm:px-10 md:px-12 lg:px-16 xl:px-20 py-10`}
+    >
       <div
       // className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
